@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiEdit, FiTrash, FiSearch } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
-const API_BASE = "http://localhost:5000"; // LOCAL BACKEND URL
+const API_BASE = "https://wow-kids-worksheets-backend.vercel.app"; // LOCAL BACKEND URL
 
 const CATEGORY_MAP = {
   Preschool: ["Pre School Tracing", "English", "Maths", "Science", "Homework", "Practice"],

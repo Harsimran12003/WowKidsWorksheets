@@ -36,7 +36,7 @@ const Navbar = () => {
 
   // Fetch all worksheets once for search suggestions
   useEffect(() => {
-    fetch("http://localhost:5000/api/worksheets")
+    fetch("https://wow-kids-worksheets-backend.vercel.app/api/worksheets")
       .then((res) => res.json())
       .then((data) => {
         if (data?.success) {

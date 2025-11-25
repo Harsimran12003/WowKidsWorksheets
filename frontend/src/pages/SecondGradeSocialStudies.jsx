@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiEye, FiX } from "react-icons/fi";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://wow-kids-worksheets-backend.vercel.app";
 const BATCH = 4;
 
 export default function SecondGradeSocialStudies() {

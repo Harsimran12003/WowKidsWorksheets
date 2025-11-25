@@ -34,7 +34,7 @@ export default function AddWorksheet() {
       formData.append("subCategory", subCategory);
       formData.append("file", file);
 
-      const res = await axios.post("http://localhost:5000/api/worksheets", formData, {
+      const res = await axios.post("https://wow-kids-worksheets-backend.vercel.app/api/worksheets", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
