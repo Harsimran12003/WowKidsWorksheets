@@ -7,6 +7,14 @@ import Footer from "../components/Footer";
 const API_BASE = "https://wow-kids-worksheets-backend.vercel.app";
 const BATCH = 4;
 
+// PDF detector
+const isPDF = (url) => {
+  if (!url) return false;
+  const clean = url.split(/[?#]/)[0].toLowerCase(); // removes ? and # parts
+  return clean.endsWith(".pdf") || clean.includes("/raw/upload/");
+};
+
+
 const PreschoolEnglish = () => {
   const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
@@ -38,7 +46,6 @@ const PreschoolEnglish = () => {
 
       {/* HERO SECTION */}
       <section className="relative pt-24 pb-20 overflow-hidden">
-        
         {/* Floating Icons */}
         <motion.span
           className="absolute left-4 md:left-20 top-10 md:top-24 text-4xl md:text-5xl opacity-40 pointer-events-none"
@@ -97,21 +104,17 @@ const PreschoolEnglish = () => {
                 ABC
               </div>
 
-              {/* Worksheet Preview (Image or PDF preview) */}
+              {/* Worksheet Thumbnail */}
               <div className="w-full h-44 bg-white shadow-inner border p-3 rounded-xl flex justify-center items-center overflow-hidden relative">
+                {isPDF(ws.file) ? (
+  <div className="text-center text-gray-600">
+    <p className="font-bold">PDF File</p>
+    <p className="text-xs">(Click View to open)</p>
+  </div>
+) : (
+  <img src={ws.file} className="w-full h-full object-contain" />
+)}
 
-                {ws.file.endsWith(".pdf") ? (
-                  <iframe
-                    src={`${ws.file}#toolbar=0`}
-                    className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
-                  />
-                ) : (
-                  <img
-                    src={ws.file}
-                    alt={ws.name}
-                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-                  />
-                )}
 
               </div>
 
@@ -130,8 +133,8 @@ const PreschoolEnglish = () => {
                 </button>
 
                 <a
-                  href={ws.file}
-                  download
+ href={`${ws.file}?fl_attachment`}
+  download
                   className="flex-1 flex items-center justify-center gap-2 bg-green-500 text-white py-2 px-3 rounded-full shadow-md hover:bg-green-600"
                 >
                   <FiDownload /> Download
@@ -179,19 +182,19 @@ const PreschoolEnglish = () => {
               <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">
                 {previewData.name}
               </h2>
+              
 
-              {previewData.file.endsWith(".pdf") ? (
-                <embed
-                  src={previewData.file}
-                  type="application/pdf"
-                  className="w-full h-[70vh] rounded-xl border"
-                />
-              ) : (
-                <img
-                  src={previewData.file}
-                  className="w-full h-[70vh] object-contain rounded-xl"
-                />
-              )}
+              {isPDF(previewData.file) ? (
+  <embed
+    src={`${previewData.file}#toolbar=0`}
+    type="application/pdf"
+    className="w-full h-[70vh] rounded-xl"
+  />
+) : (
+  <img src={previewData.file} className="w-full h-[70vh] object-contain" />
+)}
+
+
             </motion.div>
           </motion.div>
         )}

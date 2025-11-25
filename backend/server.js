@@ -8,6 +8,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 dotenv.config();
 
+// App Setup
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -34,14 +35,18 @@ cloudinary.config({
 // ================================
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "wowkids_worksheets",
-    resource_type: "auto",
-    type: "upload",        // <-- forces PUBLIC mode
-    access_mode: "public", // <-- ensures downloadable URL
+  params: async (req, file) => {
+    const ext = file.originalname.split(".").pop().toLowerCase();
+    const isPDF = ext === "pdf";
+
+    return {
+      folder: "wowkids_worksheets",
+      resource_type: isPDF ? "raw" : "image",
+      format: ext,
+      public_id: Date.now().toString(),
+    };
   },
 });
-
 
 const upload = multer({ storage });
 
@@ -52,7 +57,7 @@ const worksheetSchema = new mongoose.Schema({
   name: String,
   category: String,
   subCategory: String,
-  file: String,
+  file: String, // final Cloudinary URL
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -67,15 +72,19 @@ app.post("/api/worksheets", upload.single("file"), async (req, res) => {
   try {
     const { name, category, subCategory } = req.body;
 
+    // ************ FIXED HERE ***********
+    const fileUrl = req.file.path;
+    // Save to DB
     const worksheet = await Worksheet.create({
       name,
       category,
       subCategory,
-      file: req.file.path, // Cloudinary URL
+      file: fileUrl,
     });
 
     res.json({ success: true, worksheet });
   } catch (error) {
+    console.log("UPLOAD ERROR:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -90,7 +99,7 @@ app.get("/api/worksheets", async (req, res) => {
   }
 });
 
-// ⭐ UPDATE WORKSHEET
+// ⭐ UPDATE
 app.put("/api/worksheets/:id", upload.single("file"), async (req, res) => {
   try {
     const { name, category, subCategory } = req.body;
@@ -113,7 +122,7 @@ app.put("/api/worksheets/:id", upload.single("file"), async (req, res) => {
   }
 });
 
-// ⭐ DELETE WORKSHEET
+// ⭐ DELETE
 app.delete("/api/worksheets/:id", async (req, res) => {
   try {
     const ws = await Worksheet.findById(req.params.id);
@@ -128,10 +137,9 @@ app.delete("/api/worksheets/:id", async (req, res) => {
 });
 
 // ================================
-// 📌 START SERVER (LOCAL ONLY)
+// 📌 START (LOCAL)
 // ================================
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
 
-export default app; // Needed for Vercel
+export default app;
