@@ -22,12 +22,12 @@ const PuzzleCard = ({ ws, onView }) => (
       {/* PDF or Image thumbnail inside card */}
       {ws.file.endsWith(".pdf") ? (
         <iframe
-          src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+          src={`${ws.file}#toolbar=0`}
           className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
         />
       ) : (
         <img
-          src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+          src={ws.file}
           alt={ws.name}
           className="w-full h-full object-contain"
         />
@@ -48,7 +48,7 @@ const PuzzleCard = ({ ws, onView }) => (
       </button>
 
       <a
-        href={`${API_BASE}/uploads/worksheets/${ws.file}`}
+        href={ws.file}
         download
         className="flex-1 bg-green-500 text-white py-2 px-3 rounded-full shadow-md 
                    hover:bg-green-600 hover:scale-105 transition flex items-center justify-center gap-2"
@@ -171,13 +171,13 @@ export default function Puzzles() {
               <div className="w-full h-[70vh]">
                 {preview.file.endsWith(".pdf") ? (
                   <embed
-                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    src={preview.file}
                     type="application/pdf"
                     className="w-full h-full rounded-xl"
                   />
                 ) : (
                   <img
-                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    src={preview.file}
                     className="w-full h-full rounded-xl object-contain"
                     alt="preview"
                   />

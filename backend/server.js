@@ -3,12 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 dotenv.config();
 
@@ -20,30 +16,27 @@ app.use(express.json());
 // 📌 CONNECT MONGODB
 // ================================
 mongoose
-  .connect(process.env.MONGO_URI, {
-    dbName: "wowkids",
-  })
+  .connect(process.env.MONGO_URI, { dbName: "wowkids" })
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("MongoDB Error:", err));
 
 // ================================
-// 📌 MULTER STORAGE
+// 📌 CLOUDINARY CONFIG
 // ================================
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadPath = "uploads/worksheets";
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-    // create folder if missing
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-
-    cb(null, uploadPath);
-  },
-
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, Date.now() + ext);
+// ================================
+// 📌 MULTER → CLOUDINARY STORAGE
+// ================================
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "wowkids_worksheets",
+    resource_type: "auto", // supports images + pdf
   },
 });
 
@@ -54,9 +47,9 @@ const upload = multer({ storage });
 // ================================
 const worksheetSchema = new mongoose.Schema({
   name: String,
-  file: String,
   category: String,
   subCategory: String,
+  file: String,
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -75,12 +68,12 @@ app.post("/api/worksheets", upload.single("file"), async (req, res) => {
       name,
       category,
       subCategory,
-      file: req.file ? req.file.filename : null,
+      file: req.file.path, // Cloudinary URL
     });
 
     res.json({ success: true, worksheet });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -89,8 +82,8 @@ app.get("/api/worksheets", async (req, res) => {
   try {
     const data = await Worksheet.find().sort({ createdAt: -1 });
     res.json({ success: true, worksheets: data });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -98,11 +91,11 @@ app.get("/api/worksheets", async (req, res) => {
 app.put("/api/worksheets/:id", upload.single("file"), async (req, res) => {
   try {
     const { name, category, subCategory } = req.body;
+
     const updateData = { name, category, subCategory };
 
-    // If new file uploaded
     if (req.file) {
-      updateData.file = req.file.filename;
+      updateData.file = req.file.path;
     }
 
     const updated = await Worksheet.findByIdAndUpdate(
@@ -112,8 +105,8 @@ app.put("/api/worksheets/:id", upload.single("file"), async (req, res) => {
     );
 
     res.json({ success: true, worksheet: updated });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -121,30 +114,21 @@ app.put("/api/worksheets/:id", upload.single("file"), async (req, res) => {
 app.delete("/api/worksheets/:id", async (req, res) => {
   try {
     const ws = await Worksheet.findById(req.params.id);
-
     if (!ws) return res.status(404).json({ success: false, message: "Not found" });
-
-    // Delete file
-    if (ws.file && fs.existsSync(`uploads/worksheets/${ws.file}`)) {
-      fs.unlinkSync(`uploads/worksheets/${ws.file}`);
-    }
 
     await Worksheet.findByIdAndDelete(req.params.id);
 
     res.json({ success: true, message: "Worksheet deleted" });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// ⭐ Serve Uploaded Files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 // ================================
-// 📌 START SERVER
+// 📌 START SERVER (LOCAL ONLY)
 // ================================
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
+
+export default app; // Needed for Vercel

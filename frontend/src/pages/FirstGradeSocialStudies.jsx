@@ -104,12 +104,12 @@ const FirstGradeSocialStudies = () => {
                 <div className="w-full h-44 rounded-xl bg-white shadow-inner border p-3 overflow-hidden relative">
                   {ws.file.endsWith(".pdf") ? (
                     <iframe
-                      src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+                      src={`${ws.file}#toolbar=0`}
                       className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
                     />
                   ) : (
                     <img
-                      src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                      src={ws.file}
                       alt={ws.name}
                       className="w-full h-full object-contain"
                     />
@@ -129,7 +129,7 @@ const FirstGradeSocialStudies = () => {
                   </button>
 
                   <a
-                    href={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                    href={ws.file}
                     download
                     className="flex-1 bg-green-500 text-white py-2 px-3 rounded-full shadow hover:bg-green-600 flex items-center justify-center gap-2"
                   >
@@ -182,13 +182,13 @@ const FirstGradeSocialStudies = () => {
 
               {previewData.file.endsWith(".pdf") ? (
                 <embed
-                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
+                  src={previewData.file}
                   className="w-full h-[70vh] rounded-xl border"
                   type="application/pdf"
                 />
               ) : (
                 <img
-                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
+                  src={previewData.file}
                   className="w-full h-[70vh] object-contain rounded-xl"
                   alt={previewData.name}
                 />

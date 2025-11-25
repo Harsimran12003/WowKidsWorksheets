@@ -94,12 +94,12 @@ const PreschoolHomework = () => {
 
                 {ws.file.endsWith(".pdf") ? (
                   <iframe
-                    src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+                    src={`${ws.file}#toolbar=0`}
                     className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
                   />
                 ) : (
                   <img
-                    src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                    src={ws.file}
                     alt={ws.title}
                     className="w-full h-full object-contain hover:scale-105 transition-transform"
                   />
@@ -121,7 +121,7 @@ const PreschoolHomework = () => {
                 </button>
 
                 <a
-                  href={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                  href={ws.file}
                   download
                   className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full shadow-md"
                 >
@@ -174,13 +174,13 @@ const PreschoolHomework = () => {
               <div className="w-full h-[70vh]">
                 {previewData.file.endsWith(".pdf") ? (
                   <embed
-                    src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
+                    src={previewData.file}
                     type="application/pdf"
                     className="w-full h-full rounded-xl"
                   />
                 ) : (
                   <img
-                    src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
+                    src={previewData.file}
                     alt={previewData.name}
                     className="w-full h-full object-contain rounded-xl"
                   />

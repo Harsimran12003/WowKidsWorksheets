@@ -134,7 +134,7 @@ export default function ViewWorksheets() {
 
                   <td className="p-4 max-w-xs truncate">
                     <a
-                      href={`${API_BASE}/uploads/${ws.file}`}
+                      href={ws.file}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 underline"
