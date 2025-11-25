@@ -1,56 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiEye, FiX } from "react-icons/fi";
 import Footer from "../components/Footer";
 
-// SAMPLE WORKSHEETS — Replace with your actual PDFs/images
-const tracingWorksheets = [
-  {
-    title: "Alphabet Tracing A-Z",
-    img: "/worksheets/preschool/alpha-trace.png",
-    pdf: "/worksheets/preschool/alpha-trace.pdf",
-  },
-  {
-    title: "Number Tracing 1-20",
-    img: "/worksheets/preschool/number-trace.png",
-    pdf: "/worksheets/preschool/number-trace.pdf",
-  },
-  {
-    title: "Shapes Tracing",
-    img: "/worksheets/preschool/shapes-trace.png",
-    pdf: "/worksheets/preschool/shapes-trace.pdf",
-  },
-  {
-    title: "Lines & Patterns Tracing",
-    img: "/worksheets/preschool/pattern-trace.png",
-    pdf: "/worksheets/preschool/pattern-trace.pdf",
-  },
-  {
-    title: "Lines & Patterns Tracing",
-    img: "/worksheets/preschool/pattern-trace.png",
-    pdf: "/worksheets/preschool/pattern-trace.pdf",
-  },
-];
-
-// How many to show per batch
+const API_BASE = "http://localhost:5000";
 const BATCH = 4;
 
 const PreschoolTracing = () => {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
-  const [previewData, setPreviewData] = useState(null); // holds opened worksheet
+  const [previewData, setPreviewData] = useState(null);
 
-  const openPreview = (ws) => setPreviewData(ws);
-  const closePreview = () => setPreviewData(null);
+  // Fetch backend data
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          // Load only preschool tracing worksheets
+          const filtered = data.worksheets.filter(
+            (ws) =>
+              ws.category === "preschool" &&
+              ws.subCategory.toLowerCase() === "pre-school-tracing"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.log("Error:", err));
+  }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-yellow-50 to-blue-50">
-      {/* NAVBAR */}
       <Navbar />
 
       {/* HERO SECTION */}
       <section className="relative pt-24 pb-16 text-center overflow-hidden">
-        {/* Floating Decor */}
         <motion.div
           className="absolute left-10 top-20 text-5xl"
           animate={{ y: [0, -12, 0] }}
@@ -58,6 +47,7 @@ const PreschoolTracing = () => {
         >
           🎈
         </motion.div>
+
         <motion.div
           className="absolute right-20 top-32 text-5xl"
           animate={{ y: [0, -10, 0] }}
@@ -77,26 +67,24 @@ const PreschoolTracing = () => {
         </motion.h1>
 
         <p className="mt-4 max-w-2xl mx-auto text-gray-700 text-lg">
-          Help little learners practice writing and improve fine motor skills with
-          fun & interactive tracing worksheets!
+          Help little learners practice writing and improve fine motor skills with fun & interactive tracing worksheets!
         </p>
       </section>
 
       {/* WORKSHEETS GRID */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {tracingWorksheets.slice(0, visible).map((ws, i) => (
+          {displayed.map((ws) => (
             <motion.div
-              key={i}
+              key={ws._id}
               initial={{ opacity: 0, scale: 0.85 }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ y: -8, scale: 1.03 }}
               transition={{ duration: 0.35 }}
               className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl 
-                   border-4 border-pink-200 relative p-5 flex flex-col 
-                   items-center"
+                         border-4 border-pink-200 relative p-5 flex flex-col items-center"
             >
-              {/* Cute floating badge */}
+              {/* Floating badge */}
               <motion.div
                 animate={{ y: [0, -6, 0] }}
                 transition={{ repeat: Infinity, duration: 2 }}
@@ -105,40 +93,44 @@ const PreschoolTracing = () => {
                 ✨
               </motion.div>
 
-              {/* Worksheet preview */}
-              <div className="w-full h-44 rounded-2xl bg-white shadow-inner 
-                        border border-gray-200 p-3 flex items-center justify-center 
-                        overflow-hidden relative">
-                <img
-                  src={ws.img}
-                  alt={ws.title}
-                  className="w-full h-full object-contain transition-transform 
-                       duration-300 hover:scale-105"
-                />
+              {/* Preview (supports PDF thumbnails) */}
+              <div className="w-full h-44 rounded-2xl bg-white shadow-inner border border-gray-200 p-3 
+                              flex items-center justify-center overflow-hidden relative">
+
+                {ws.file.endsWith(".pdf") ? (
+                  <iframe
+                    src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+                    className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+                  />
+                ) : (
+                  <img
+                    src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                    alt={ws.name}
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                  />
+                )}
               </div>
 
               {/* Title */}
               <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 px-2 min-h-[56px]">
-                {ws.title}
+                {ws.name}
               </h3>
 
-              {/* BUTTON AREA */}
+              {/* Buttons */}
               <div className="mt-auto w-full flex justify-between gap-3 pt-4">
                 <button
-                  onClick={() => openPreview(ws)}
-                  className="flex-1 flex items-center justify-center gap-2 
-                       bg-blue-500 hover:bg-blue-600 text-white py-2 
-                       rounded-full font-semibold shadow-md transition cursor-pointer"
+                  onClick={() => setPreviewData(ws)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 
+                             text-white py-2 rounded-full font-semibold shadow-md transition"
                 >
                   <FiEye /> View
                 </button>
 
                 <a
-                  href={ws.pdf}
+                  href={`${API_BASE}/uploads/worksheets/${ws.file}`}
                   download
-                  className="flex-1 flex items-center justify-center gap-2 
-                       bg-green-500 hover:bg-green-600 text-white py-2 px-3 
-                       rounded-full font-semibold shadow-md transition"
+                  className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 
+                             text-white py-2 px-3 rounded-full font-semibold shadow-md transition"
                 >
                   <FiDownload /> Download
                 </a>
@@ -147,12 +139,13 @@ const PreschoolTracing = () => {
           ))}
         </div>
 
-        {/* LOAD MORE BUTTON */}
-        {visible < tracingWorksheets.length && (
+        {/* LOAD MORE */}
+        {visible < worksheets.length && (
           <div className="flex justify-center mt-10">
             <button
               onClick={() => setVisible((prev) => prev + BATCH)}
-              className="px-8 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-full font-bold shadow-lg text-lg cursor-pointer transition"
+              className="px-8 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-full 
+                         font-bold shadow-lg text-lg transition"
             >
               Load More ...
             </button>
@@ -175,29 +168,29 @@ const PreschoolTracing = () => {
               exit={{ scale: 0.7, opacity: 0 }}
               className="bg-white rounded-3xl p-6 max-w-3xl w-full shadow-2xl relative"
             >
-              {/* CLOSE BUTTON */}
+              {/* Close Button */}
               <button
-                onClick={closePreview}
+                onClick={() => setPreviewData(null)}
                 className="absolute top-3 right-3 text-3xl text-gray-600 hover:text-pink-600"
               >
                 <FiX />
               </button>
 
               <h2 className="text-2xl font-bold text-center mb-4 text-pink-600">
-                {previewData.title}
+                {previewData.name}
               </h2>
 
-              {/* PREVIEW AREA: Image or PDF */}
-              {previewData.pdf.endsWith(".pdf") ? (
+              {/* PDF / Image Preview */}
+              {previewData.file.endsWith(".pdf") ? (
                 <embed
-                  src={previewData.pdf}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   type="application/pdf"
                   className="w-full h-[70vh] rounded-xl border-2"
                 />
               ) : (
                 <img
-                  src={previewData.img}
-                  alt={previewData.title}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
+                  alt={previewData.name}
                   className="w-full h-[70vh] object-contain rounded-xl"
                 />
               )}
@@ -205,6 +198,7 @@ const PreschoolTracing = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
       <Footer />
     </div>
   );

@@ -4,16 +4,10 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiEye, FiDownload, FiX } from "react-icons/fi";
 
-const worksheets = [
-  { title: "Simple Mazes", img: "/worksheets/puzzles/maze.png", pdf: "/worksheets/puzzles/maze.pdf" },
-  { title: "Spot the Difference", img: "/worksheets/puzzles/diff.png", pdf: "/worksheets/puzzles/diff.pdf" },
-  { title: "Match & Find", img: "/worksheets/puzzles/match.png", pdf: "/worksheets/puzzles/match.pdf" },
-  { title: "Logic Puzzles", img: "/worksheets/puzzles/logic.png", pdf: "/worksheets/puzzles/logic.pdf" },
-];
-
+const API_BASE = "http://localhost:5000";
 const BATCH = 4;
 
-/* CARD */
+/* CARD COMPONENT */
 const PuzzleCard = ({ ws, onView }) => (
   <motion.div
     whileHover={{ scale: 1.06, y: -6 }}
@@ -23,12 +17,25 @@ const PuzzleCard = ({ ws, onView }) => (
                transition-all"
   >
     <div className="w-full h-44 rounded-2xl bg-white/70 border border-white/20 p-3 
-                    flex items-center justify-center overflow-hidden">
-      <img src={ws.img} alt={ws.title} className="w-full h-full object-contain" />
+                    flex items-center justify-center overflow-hidden relative">
+
+      {/* PDF or Image thumbnail inside card */}
+      {ws.file.endsWith(".pdf") ? (
+        <iframe
+          src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+          className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+        />
+      ) : (
+        <img
+          src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+          alt={ws.name}
+          className="w-full h-full object-contain"
+        />
+      )}
     </div>
 
     <h3 className="mt-4 text-lg font-bold text-gray-700 text-center min-h-[60px]">
-      {ws.title}
+      {ws.name}
     </h3>
 
     <div className="mt-auto w-full flex gap-3 pt-4">
@@ -41,7 +48,7 @@ const PuzzleCard = ({ ws, onView }) => (
       </button>
 
       <a
-        href={ws.pdf}
+        href={`${API_BASE}/uploads/worksheets/${ws.file}`}
         download
         className="flex-1 bg-green-500 text-white py-2 px-3 rounded-full shadow-md 
                    hover:bg-green-600 hover:scale-105 transition flex items-center justify-center gap-2"
@@ -53,12 +60,29 @@ const PuzzleCard = ({ ws, onView }) => (
 );
 
 export default function Puzzles() {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          const filtered = data.worksheets.filter(
+            (ws) =>
+              ws.subCategory === "Puzzles" &&
+              ws.subCategory.toLowerCase() === "puzzles"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.log("Error:", err));
   }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-sky-50 to-indigo-50">
@@ -66,7 +90,6 @@ export default function Puzzles() {
 
       {/* HERO */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
-
         {/* Floating emojis */}
         <motion.span
           className="absolute left-10 top-20 text-6xl opacity-40 pointer-events-none"
@@ -83,8 +106,6 @@ export default function Puzzles() {
         >
           🎮
         </motion.span>
-
-        
 
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -103,15 +124,15 @@ export default function Puzzles() {
       {/* GRID */}
       <main className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-          {worksheets.slice(0, visible).map((ws, idx) => (
-            <PuzzleCard key={idx} ws={ws} onView={setPreview} />
+          {displayed.map((ws) => (
+            <PuzzleCard key={ws._id} ws={ws} onView={setPreview} />
           ))}
         </div>
 
         {visible < worksheets.length && (
           <div className="flex justify-center mt-12">
             <button
-              onClick={() => setVisible(v => Math.min(worksheets.length, v + BATCH))}
+              onClick={() => setVisible((v) => v + BATCH)}
               className="px-10 py-3 bg-purple-700 text-white rounded-full shadow-lg 
                          hover:bg-purple-800 transition text-lg"
             >
@@ -121,7 +142,7 @@ export default function Puzzles() {
         )}
       </main>
 
-      {/* MODAL */}
+      {/* PREVIEW MODAL */}
       <AnimatePresence>
         {preview && (
           <motion.div
@@ -144,14 +165,22 @@ export default function Puzzles() {
               </button>
 
               <h2 className="text-2xl font-bold text-center mb-4 text-purple-700">
-                {preview.title}
+                {preview.name}
               </h2>
 
               <div className="w-full h-[70vh]">
-                {preview.pdf.endsWith(".pdf") ? (
-                  <embed src={preview.pdf} type="application/pdf" className="w-full h-full rounded-xl" />
+                {preview.file.endsWith(".pdf") ? (
+                  <embed
+                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    type="application/pdf"
+                    className="w-full h-full rounded-xl"
+                  />
                 ) : (
-                  <img src={preview.img} className="w-full h-full rounded-xl object-contain" />
+                  <img
+                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    className="w-full h-full rounded-xl object-contain"
+                    alt="preview"
+                  />
                 )}
               </div>
             </motion.div>

@@ -64,9 +64,11 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <p className="mt-10 text-gray-800 font-semibold mb-40">
-          Powered by Excellence Web Solutions <br />
+        <p className="mt-10 text-gray-800 font-semibold">
           © 2025 WowKids Worksheets. All Rights Reserved 🌟
+        </p>
+        <p className="mt-7 text-gray-500 text-[14px] mb-45">
+          Powered by Excellence Web Solutions <br />
         </p>
       </div>
 

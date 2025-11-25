@@ -1,70 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiEye, FiX } from "react-icons/fi";
 
-// SAMPLE WORKSHEETS — Replace with real worksheets
-const firstGradeScience = [
-  {
-    title: "Living & Non-Living Things",
-    img: "/worksheets/grade1/science/living-nonliving.png",
-    pdf: "/worksheets/grade1/science/living-nonliving.pdf",
-  },
-  {
-    title: "Parts of a Plant",
-    img: "/worksheets/grade1/science/plant-parts.png",
-    pdf: "/worksheets/grade1/science/plant-parts.pdf",
-  },
-  {
-    title: "Animals & Their Homes",
-    img: "/worksheets/grade1/science/animal-homes.png",
-    pdf: "/worksheets/grade1/science/animal-homes.pdf",
-  },
-  {
-    title: "Five Senses",
-    img: "/worksheets/grade1/science/five-senses.png",
-    pdf: "/worksheets/grade1/science/five-senses.pdf",
-  },
-  {
-    title: "Weather & Seasons",
-    img: "/worksheets/grade1/science/seasons.png",
-    pdf: "/worksheets/grade1/science/seasons.pdf",
-  },
-  {
-    title: "Healthy & Unhealthy Food",
-    img: "/worksheets/grade1/science/healthy-food.png",
-    pdf: "/worksheets/grade1/science/healthy-food.pdf",
-  },
-];
-
+const API_BASE = "http://localhost:5000"; 
 const BATCH = 4;
 
 const FirstGradeScience = () => {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [previewData, setPreviewData] = useState(null);
 
-  const openPreview = (ws) => setPreviewData(ws);
-  const closePreview = () => setPreviewData(null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          // Filter only 1st grade + Science
+          const filtered = data.worksheets.filter(
+            (ws) =>
+              ws.category === "1st-grade" &&
+              ws.subCategory === "Science"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.log("Fetch Error:", err));
+  }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-teal-50">
       <Navbar />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
-
-        {/* Floating science emojis */}
         <motion.span
-          className="absolute left-10 top-20 text-6xl opacity-50 pointer-events-none"
-          animate={{ y: [0, -14, 0] }}
+          className="absolute left-10 top-20 text-6xl opacity-50"
+          animate={{ y: [0, -16, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
           🔬
         </motion.span>
 
         <motion.span
-          className="absolute left-1/2 bottom-10 text-6xl opacity-40 pointer-events-none"
+          className="absolute right-10 bottom-10 text-6xl opacity-50"
           animate={{ y: [0, -12, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
@@ -75,69 +59,82 @@ const FirstGradeScience = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="text-5xl md:text-6xl font-extrabold text-green-700 leading-snug"
+          className="text-5xl md:text-6xl font-extrabold text-green-700"
           style={{ fontFamily: "'Fredoka One', cursive" }}
         >
-          1st Grade Science Worksheets 🧪🔬
+          1st Grade Science Worksheets 🧪
         </motion.h1>
 
         <p className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
-          Explore plants, animals, weather, senses, food, and much more with
-          colorful and engaging 1st-grade science worksheets!
+          Explore plants, animals, weather, senses, food & more with fun science worksheets!
         </p>
       </header>
 
-      {/* WORKSHEET GRID */}
+      {/* GRID */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-          {firstGradeScience.slice(0, visible).map((ws, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.85 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.05, y: -6 }}
-              transition={{ duration: 0.35 }}
-              className="relative bg-white rounded-3xl shadow-xl border-4 border-green-200 p-5 flex flex-col"
-            >
-              {/* Badge */}
-              <div className="absolute -top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-lg shadow font-bold text-sm">
-                SCI
-              </div>
+        {displayed.length === 0 ? (
+          <p className="text-center text-gray-600 text-xl mt-10">
+            No Science worksheets found for 1st Grade.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+            {displayed.map((ws) => (
+              <motion.div
+                key={ws._id}
+                initial={{ opacity: 0, scale: 0.85 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05, y: -6 }}
+                transition={{ duration: 0.35 }}
+                className="relative bg-white rounded-3xl shadow-xl border-4 border-green-200 p-5 flex flex-col"
+              >
+                <div className="absolute -top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-lg shadow font-bold text-sm">
+                  SCI
+                </div>
 
-              <div className="w-full h-44 rounded-xl bg-white shadow-inner border p-3 flex items-center justify-center overflow-hidden">
-                <img
-                  src={ws.img}
-                  alt={ws.title}
-                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-                />
-              </div>
+                {/* Thumbnail - PDF or Image */}
+                <div className="w-full h-44 rounded-xl bg-white shadow-inner border p-3 relative overflow-hidden">
+                  {ws.file.endsWith(".pdf") ? (
+                    <iframe
+                      src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+                      className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+                    />
+                  ) : (
+                    <img
+                      src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                      alt={ws.name}
+                      className="w-full h-full object-contain"
+                    />
+                  )}
+                </div>
 
-              <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
-                {ws.title}
-              </h3>
+                <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
+                  {ws.name}
+                </h3>
 
-              <div className="mt-auto flex gap-3 pt-4">
-                <button
-                  onClick={() => openPreview(ws)}
-                  className="flex-1 bg-green-500 text-white py-2 rounded-full shadow hover:bg-green-600 flex items-center justify-center gap-2"
-                >
-                  <FiEye /> View
-                </button>
+                {/* Buttons */}
+                <div className="mt-auto flex gap-3 pt-4">
+                  <button
+                    onClick={() => setPreviewData(ws)}
+                    className="flex-1 bg-green-500 text-white py-2 rounded-full shadow hover:bg-green-600 flex items-center justify-center gap-2"
+                  >
+                    <FiEye /> View
+                  </button>
 
-                <a
-                  href={ws.pdf}
-                  download
-                  className="flex-1 bg-blue-500 text-white py-2 px-3 rounded-full shadow hover:bg-blue-600 flex items-center justify-center gap-2"
-                >
-                  <FiDownload /> Download
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                  <a
+                    href={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                    download
+                    className="flex-1 bg-blue-500 text-white py-2 px-3 rounded-full shadow hover:bg-blue-600 flex items-center justify-center gap-2"
+                  >
+                    <FiDownload /> Download
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* LOAD MORE */}
-        {visible < firstGradeScience.length && (
+        {visible < worksheets.length && (
           <div className="flex justify-center mt-12">
             <button
               onClick={() => setVisible((prev) => prev + BATCH)}
@@ -165,27 +162,27 @@ const FirstGradeScience = () => {
               className="bg-white rounded-3xl p-6 max-w-3xl w-full shadow-2xl relative"
             >
               <button
-                onClick={closePreview}
+                onClick={() => setPreviewData(null)}
                 className="absolute top-3 right-3 text-3xl text-gray-600 hover:text-green-600"
               >
                 <FiX />
               </button>
 
               <h2 className="text-2xl font-bold text-center mb-4 text-green-700">
-                {previewData.title}
+                {previewData.name}
               </h2>
 
-              {previewData.pdf.endsWith(".pdf") ? (
+              {previewData.file.endsWith(".pdf") ? (
                 <embed
-                  src={previewData.pdf}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   className="w-full h-[70vh] rounded-xl border"
                   type="application/pdf"
                 />
               ) : (
                 <img
-                  src={previewData.img}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   className="w-full h-[70vh] object-contain rounded-xl"
-                  alt={previewData.title}
+                  alt={previewData.name}
                 />
               )}
             </motion.div>

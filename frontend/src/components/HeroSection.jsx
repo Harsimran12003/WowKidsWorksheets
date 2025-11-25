@@ -32,7 +32,19 @@ const HeroSection = () => {
             style={{ fontFamily: "'Fredoka One', cursive" }}
           >
             Online Worksheets
-            <span className="block text-pink-600 mt-1">For Kids 🎨✨</span>
+            <span className="block text-pink-600 mt-1">
+  For{" "}
+  <motion.span
+  animate={{ rotate: [0, 3, -3, 0] }}
+  transition={{ repeat: Infinity, duration: 1.0 }}
+  className="inline-block"
+>
+  Kids
+</motion.span>
+
+{" "}
+  🎨✨
+</span>
           </h1>
 
           <p className="mt-4 text-gray-700 text-lg max-w-xl">

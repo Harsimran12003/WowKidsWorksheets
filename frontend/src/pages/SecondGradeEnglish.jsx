@@ -1,51 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiEye, FiX } from "react-icons/fi";
 
-// SAMPLE WORKSHEETS (Replace with real ones)
-const secondGradeEnglish = [
-  {
-    title: "Parts of Speech Basics",
-    img: "/worksheets/grade2/english/parts-of-speech.png",
-    pdf: "/worksheets/grade2/english/parts-of-speech.pdf",
-  },
-  {
-    title: "Understanding Sentences",
-    img: "/worksheets/grade2/english/sentences.png",
-    pdf: "/worksheets/grade2/english/sentences.pdf",
-  },
-  {
-    title: "Pronouns Worksheet",
-    img: "/worksheets/grade2/english/pronouns.png",
-    pdf: "/worksheets/grade2/english/pronouns.pdf",
-  },
-  {
-    title: "Present & Past Tense",
-    img: "/worksheets/grade2/english/tense.png",
-    pdf: "/worksheets/grade2/english/tense.pdf",
-  },
-  {
-    title: "Comprehension Passage 1",
-    img: "/worksheets/grade2/english/comprehension1.png",
-    pdf: "/worksheets/grade2/english/comprehension1.pdf",
-  },
-  {
-    title: "Comprehension Passage 2",
-    img: "/worksheets/grade2/english/comprehension2.png",
-    pdf: "/worksheets/grade2/english/comprehension2.pdf",
-  },
-];
-
+const API_BASE = "http://localhost:5000";
 const BATCH = 4;
 
 const SecondGradeEnglish = () => {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [previewData, setPreviewData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const openPreview = (ws) => setPreviewData(ws);
-  const closePreview = () => setPreviewData(null);
+  // FETCH ALL & FILTER for 2nd grade → English
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setLoading(true);
+    setError("");
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch worksheets");
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.success && Array.isArray(data.worksheets)) {
+          const filtered = data.worksheets.filter((ws) => {
+            const cat = (ws.category || "").toString().toLowerCase();
+            const sub = (ws.subCategory || ws.subcategory || "").toString().toLowerCase();
+            // match "english" subCategory and a category that indicates 2nd grade
+            const isSecond =
+              cat.includes("2nd") || cat.includes("2") || cat.includes("second") || cat.includes("2nd-grade") || cat.includes("2nd grade");
+            return sub === "english" && isSecond;
+          });
+          setWorksheets(filtered);
+        } else {
+          setWorksheets([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setError("Could not load worksheets.");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-yellow-50">
@@ -53,7 +55,6 @@ const SecondGradeEnglish = () => {
 
       {/* HERO SECTION */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
-        
         {/* Floating icons */}
         <motion.span
           className="absolute left-12 top-20 text-6xl opacity-50 pointer-events-none"
@@ -91,74 +92,90 @@ const SecondGradeEnglish = () => {
         </motion.h1>
 
         <p className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
-          Improve grammar, reading comprehension, tenses, pronouns, and sentence
-          formation with well-structured & engaging worksheets.
+          Improve grammar, reading comprehension, tenses, pronouns, and sentence formation with engaging worksheets.
         </p>
       </header>
 
       {/* WORKSHEETS LIST */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
+        {loading ? (
+          <div className="text-center py-12 text-gray-500">Loading worksheets...</div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-500">{error}</div>
+        ) : displayed.length === 0 ? (
+          <p className="text-center text-gray-600 text-xl mt-10">No 2nd Grade → English worksheets found.</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+              {displayed.map((ws, i) => (
+                <motion.div
+                  key={ws._id || ws.id || i}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.05, y: -6 }}
+                  transition={{ duration: 0.35 }}
+                  className="relative bg-white rounded-3xl shadow-xl border-4 border-purple-200 p-5 flex flex-col"
+                >
+                  {/* Badge */}
+                  <div className="absolute -top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-lg shadow font-bold text-sm">
+                    ENG
+                  </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-          {secondGradeEnglish.slice(0, visible).map((ws, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.85 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.05, y: -6 }}
-              transition={{ duration: 0.35 }}
-              className="relative bg-white rounded-3xl shadow-xl border-4 border-purple-200 p-5 flex flex-col"
-            >
-              {/* Badge */}
-              <div className="absolute -top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-lg shadow font-bold text-sm">
-                ENG
-              </div>
+                  {/* Image / PDF Preview */}
+                  <div className="w-full h-44 rounded-xl bg-white shadow-inner border p-3 flex items-center justify-center overflow-hidden relative">
+                    {ws.file && ws.file.toLowerCase().endsWith(".pdf") ? (
+                      <iframe
+                        src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0&scrollbar=0`}
+                        className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+                      />
+                    ) : ws.file ? (
+                      <img
+                        src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                        alt={ws.name}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="text-gray-400">No preview</div>
+                    )}
+                  </div>
 
-              {/* Image Preview */}
-              <div className="w-full h-44 rounded-xl bg-white shadow-inner border p-3 flex items-center justify-center overflow-hidden">
-                <img
-                  src={ws.img}
-                  alt={ws.title}
-                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-                />
-              </div>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
+                    {ws.name}
+                  </h3>
 
-              {/* Title */}
-              <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
-                {ws.title}
-              </h3>
+                  {/* Buttons */}
+                  <div className="mt-auto flex gap-3 pt-4">
+                    <button
+                      onClick={() => setPreviewData(ws)}
+                      className="flex-1 bg-purple-500 text-white py-2 rounded-full shadow hover:bg-purple-600 flex items-center justify-center gap-2"
+                    >
+                      <FiEye /> View
+                    </button>
 
-              {/* Buttons */}
-              <div className="mt-auto flex gap-3 pt-4">
+                    <a
+                      href={ws.file ? `${API_BASE}/uploads/worksheets/${ws.file}` : "#"}
+                      download={!!ws.file}
+                      className="flex-1 bg-green-500 text-white py-2 px-3 rounded-full shadow hover:bg-green-600 flex items-center justify-center gap-2"
+                    >
+                      <FiDownload /> Download
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* LOAD MORE */}
+            {visible < worksheets.length && (
+              <div className="flex justify-center mt-12">
                 <button
-                  onClick={() => openPreview(ws)}
-                  className="flex-1 bg-purple-500 text-white py-2 rounded-full shadow hover:bg-purple-600 flex items-center justify-center gap-2"
+                  onClick={() => setVisible((prev) => prev + BATCH)}
+                  className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-bold shadow-lg text-lg"
                 >
-                  <FiEye /> View
+                  Load More ...
                 </button>
-
-                <a
-                  href={ws.pdf}
-                  download
-                  className="flex-1 bg-green-500 text-white py-2 px-3 rounded-full shadow hover:bg-green-600 flex items-center justify-center gap-2"
-                >
-                  <FiDownload /> Download
-                </a>
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* LOAD MORE */}
-        {visible < secondGradeEnglish.length && (
-          <div className="flex justify-center mt-12">
-            <button
-              onClick={() => setVisible((prev) => prev + BATCH)}
-              className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-bold shadow-lg text-lg"
-            >
-              Load More ...
-            </button>
-          </div>
+            )}
+          </>
         )}
       </section>
 
@@ -179,28 +196,30 @@ const SecondGradeEnglish = () => {
             >
               {/* close */}
               <button
-                onClick={closePreview}
+                onClick={() => setPreviewData(null)}
                 className="absolute top-3 right-3 text-3xl text-gray-600 hover:text-purple-600"
               >
                 <FiX />
               </button>
 
               <h2 className="text-2xl font-bold text-center mb-4 text-purple-700">
-                {previewData.title}
+                {previewData.name}
               </h2>
 
-              {previewData.pdf.endsWith(".pdf") ? (
+              {previewData.file && previewData.file.toLowerCase().endsWith(".pdf") ? (
                 <embed
-                  src={previewData.pdf}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   className="w-full h-[70vh] rounded-xl border"
                   type="application/pdf"
                 />
-              ) : (
+              ) : previewData.file ? (
                 <img
-                  src={previewData.img}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   className="w-full h-[70vh] object-contain rounded-xl"
-                  alt={previewData.title}
+                  alt={previewData.name}
                 />
+              ) : (
+                <div className="w-full h-[70vh] flex items-center justify-center text-gray-400">No preview available</div>
               )}
             </motion.div>
           </motion.div>

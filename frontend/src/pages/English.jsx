@@ -4,15 +4,7 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiEye, FiDownload, FiX } from "react-icons/fi";
 
-const worksheets = [
-  { title: "A-Z Letter Practice", img: "/worksheets/english/az.png", pdf: "/worksheets/english/az.pdf" },
-  { title: "Beginning Sounds", img: "/worksheets/english/begin-sounds.png", pdf: "/worksheets/english/begin-sounds.pdf" },
-  { title: "Match the Words", img: "/worksheets/english/match.png", pdf: "/worksheets/english/match.pdf" },
-  { title: "Simple Sentences", img: "/worksheets/english/sentences.png", pdf: "/worksheets/english/sentences.pdf" },
-  { title: "Reading Comprehension", img: "/worksheets/english/comp1.png", pdf: "/worksheets/english/comp1.pdf" },
-  { title: "Rhyming Words", img: "/worksheets/english/rhyme.png", pdf: "/worksheets/english/rhyme.pdf" },
-];
-
+const API_BASE = "http://localhost:5000"; // backend URL
 const BATCH = 4;
 
 /* CARD COMPONENT */
@@ -24,15 +16,29 @@ const GlassCard = ({ ws, onView }) => (
                hover:shadow-[rgba(100,0,200,0.3)_0px_0px_30px] 
                p-5 flex flex-col transition-all"
   >
-    <div className="w-full h-44 rounded-2xl bg-white/70 border border-white/40 p-3 
-                    flex items-center justify-center shadow-inner overflow-hidden">
-      <img src={ws.img} alt={ws.title} className="w-full h-full object-contain" />
+    <div className="relative w-full h-44 rounded-2xl bg-white/70 border border-white/40 p-3 
+                    shadow-inner overflow-hidden flex items-center justify-center">
+
+      {/* PDF preview inside card */}
+      {ws.file.toLowerCase().endsWith(".pdf") ? (
+        <iframe
+          src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0&navpanes=0&scrollbar=0`}
+          className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+        />
+      ) : (
+        <img
+          src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+          alt={ws.name}
+          className="w-full h-full object-contain"
+        />
+      )}
     </div>
 
     <h3 className="mt-4 text-lg font-bold text-gray-800 text-center min-h-[60px]">
-      {ws.title}
+      {ws.name}
     </h3>
 
+    {/* BUTTONS */}
     <div className="mt-auto w-full flex gap-3 pt-4">
       <button
         onClick={() => onView(ws)}
@@ -44,7 +50,7 @@ const GlassCard = ({ ws, onView }) => (
       </button>
 
       <a
-        href={ws.pdf}
+        href={`${API_BASE}/uploads/worksheets/${ws.file}`}
         download
         className="flex-1 py-2 px-3 rounded-full bg-green-500 text-white font-semibold 
                    hover:bg-green-600 shadow-md hover:scale-105 transition 
@@ -57,12 +63,29 @@ const GlassCard = ({ ws, onView }) => (
 );
 
 export default function English() {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [preview, setPreview] = useState(null);
 
+  // FETCH FROM BACKEND
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          // ⭐ Only English worksheets
+          const filtered = data.worksheets.filter(
+            (ws) => ws.subCategory === "English" || ws.subCategory === "english"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.error("Fetch Error:", err));
   }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-blue-50 to-pink-50">
@@ -71,7 +94,6 @@ export default function English() {
       {/* HERO SECTION */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
 
-        {/* Floating icons */}
         <motion.span
           className="absolute left-10 top-28 text-6xl opacity-40 pointer-events-none"
           animate={{ y: [0, -12, 0] }}
@@ -88,7 +110,6 @@ export default function English() {
           📝
         </motion.span>
 
-        {/* Title */}
         <motion.h1
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -105,17 +126,21 @@ export default function English() {
 
       {/* WORKSHEET GRID */}
       <main className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {worksheets.slice(0, visible).map((ws, idx) => (
-            <GlassCard key={idx} ws={ws} onView={setPreview} />
-          ))}
-        </div>
+        {displayed.length === 0 ? (
+          <p className="text-center text-gray-600 text-lg mt-10">No English worksheets found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            {displayed.map((ws) => (
+              <GlassCard key={ws._id} ws={ws} onView={setPreview} />
+            ))}
+          </div>
+        )}
 
         {/* LOAD MORE */}
         {visible < worksheets.length && (
           <div className="flex justify-center mt-12">
             <button
-              onClick={() => setVisible(v => Math.min(worksheets.length, v + BATCH))}
+              onClick={() => setVisible((v) => Math.min(worksheets.length, v + BATCH))}
               className="px-10 py-3 bg-purple-600 hover:bg-purple-700 text-white 
                          rounded-full font-bold shadow-lg text-lg transition"
             >
@@ -149,14 +174,21 @@ export default function English() {
               </button>
 
               <h2 className="text-2xl font-bold text-center mb-4 text-purple-700">
-                {preview.title}
+                {preview.name}
               </h2>
 
               <div className="h-[70vh]">
-                {preview.pdf.endsWith(".pdf") ? (
-                  <embed src={preview.pdf} type="application/pdf" className="w-full h-full rounded-xl" />
+                {preview.file.endsWith(".pdf") ? (
+                  <embed
+                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    type="application/pdf"
+                    className="w-full h-full rounded-xl"
+                  />
                 ) : (
-                  <img src={preview.img} className="w-full h-full object-contain rounded-xl" />
+                  <img
+                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    className="w-full h-full object-contain rounded-xl"
+                  />
                 )}
               </div>
             </motion.div>

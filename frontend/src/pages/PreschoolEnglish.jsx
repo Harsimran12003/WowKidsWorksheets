@@ -1,73 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiEye, FiX } from "react-icons/fi";
 import Footer from "../components/Footer";
 
-const englishWorksheets = [
-  {
-    title: "A–Z Letter Recognition",
-    img: "/worksheets/preschool/english/letter-recog.png",
-    pdf: "/worksheets/preschool/english/letter-recog.pdf",
-  },
-  {
-    title: "Beginning Sounds Worksheet",
-    img: "/worksheets/preschool/english/begin-sounds.png",
-    pdf: "/worksheets/preschool/english/begin-sounds.pdf",
-  },
-  {
-    title: "Match the Alphabet",
-    img: "/worksheets/preschool/english/match-alpha.png",
-    pdf: "/worksheets/preschool/english/match-alpha.pdf",
-  },
-  {
-    title: "Circle the Correct Letter",
-    img: "/worksheets/preschool/english/circle-letter.png",
-    pdf: "/worksheets/preschool/english/circle-letter.pdf",
-  },
-];
-
+const API_BASE = "http://localhost:5000";
 const BATCH = 4;
 
 const PreschoolEnglish = () => {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [previewData, setPreviewData] = useState(null);
 
-  const openPreview = (ws) => setPreviewData(ws);
-  const closePreview = () => setPreviewData(null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          const filtered = data.worksheets.filter(
+            (ws) =>
+              ws.category === "preschool" &&
+              ws.subCategory.toLowerCase() === "english"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.log("Error:", err));
+  }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-pink-50 to-yellow-50">
-      {/* NAVBAR */}
       <Navbar />
 
       {/* HERO SECTION */}
       <section className="relative pt-24 pb-20 overflow-hidden">
+        
         {/* Floating Icons */}
-<motion.span
-  className="absolute left-4 md:left-20 top-10 md:top-24 text-4xl md:text-5xl opacity-40 pointer-events-none"
-  animate={{ y: [0, -18, 0] }}
-  transition={{ duration: 3, repeat: Infinity }}
->
-  🔤
-</motion.span>
+        <motion.span
+          className="absolute left-4 md:left-20 top-10 md:top-24 text-4xl md:text-5xl opacity-40 pointer-events-none"
+          animate={{ y: [0, -18, 0] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          🔤
+        </motion.span>
 
-<motion.span
-  className="absolute right-6 md:right-24 top-16 md:top-32 text-4xl md:text-5xl opacity-60 pointer-events-none"
-  animate={{ y: [0, -14, 0] }}
-  transition={{ duration: 3, repeat: Infinity }}
->
-  ✏️
-</motion.span>
+        <motion.span
+          className="absolute right-6 md:right-24 top-16 md:top-32 text-4xl md:text-5xl opacity-60 pointer-events-none"
+          animate={{ y: [0, -14, 0] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          ✏️
+        </motion.span>
 
-<motion.span
-  className="absolute right-8 md:right-20 bottom-16 md:bottom-10 text-4xl md:text-5xl opacity-60 pointer-events-none"
-  animate={{ y: [0, -12, 0] }}
-  transition={{ duration: 3, repeat: Infinity }}
->
-  📘
-</motion.span>
-
+        <motion.span
+          className="absolute right-8 md:right-20 bottom-16 md:bottom-10 text-4xl md:text-5xl opacity-60 pointer-events-none"
+          animate={{ y: [0, -12, 0] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          📘
+        </motion.span>
 
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
@@ -88,9 +83,9 @@ const PreschoolEnglish = () => {
       {/* WORKSHEETS GRID */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-          {englishWorksheets.slice(0, visible).map((ws, i) => (
+          {displayed.map((ws) => (
             <motion.div
-              key={i}
+              key={ws._id}
               initial={{ opacity: 0, scale: 0.85 }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.04, y: -8 }}
@@ -102,31 +97,40 @@ const PreschoolEnglish = () => {
                 ABC
               </div>
 
-              {/* Worksheet Preview */}
-              <div className="w-full h-44 bg-white shadow-inner border p-3 rounded-xl flex justify-center items-center">
-                <img
-                  src={ws.img}
-                  alt={ws.title}
-                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-                />
+              {/* Worksheet Preview (Image or PDF preview) */}
+              <div className="w-full h-44 bg-white shadow-inner border p-3 rounded-xl flex justify-center items-center overflow-hidden relative">
+
+                {ws.file.endsWith(".pdf") ? (
+                  <iframe
+                    src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+                    className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+                  />
+                ) : (
+                  <img
+                    src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                    alt={ws.name}
+                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
+                  />
+                )}
+
               </div>
 
               {/* Title */}
               <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
-                {ws.title}
+                {ws.name}
               </h3>
 
               {/* Action Buttons */}
               <div className="mt-auto w-full flex gap-3 pt-4">
                 <button
-                  onClick={() => openPreview(ws)}
+                  onClick={() => setPreviewData(ws)}
                   className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white py-2 rounded-full shadow-md hover:bg-blue-600"
                 >
                   <FiEye /> View
                 </button>
 
                 <a
-                  href={ws.pdf}
+                  href={`${API_BASE}/uploads/worksheets/${ws.file}`}
                   download
                   className="flex-1 flex items-center justify-center gap-2 bg-green-500 text-white py-2 px-3 rounded-full shadow-md hover:bg-green-600"
                 >
@@ -138,7 +142,7 @@ const PreschoolEnglish = () => {
         </div>
 
         {/* LOAD MORE BUTTON */}
-        {visible < englishWorksheets.length && (
+        {visible < worksheets.length && (
           <div className="flex justify-center mt-12">
             <button
               onClick={() => setVisible((prev) => prev + BATCH)}
@@ -165,27 +169,26 @@ const PreschoolEnglish = () => {
               exit={{ scale: 0.7, opacity: 0 }}
               className="bg-white rounded-3xl p-6 max-w-3xl w-full shadow-2xl relative"
             >
-              {/* Close Btn */}
               <button
-                onClick={closePreview}
+                onClick={() => setPreviewData(null)}
                 className="absolute top-3 right-3 text-3xl text-gray-600 hover:text-blue-600"
               >
                 <FiX />
               </button>
 
               <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">
-                {previewData.title}
+                {previewData.name}
               </h2>
 
-              {previewData.pdf.endsWith(".pdf") ? (
+              {previewData.file.endsWith(".pdf") ? (
                 <embed
-                  src={previewData.pdf}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   type="application/pdf"
                   className="w-full h-[70vh] rounded-xl border"
                 />
               ) : (
                 <img
-                  src={previewData.img}
+                  src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                   className="w-full h-[70vh] object-contain rounded-xl"
                 />
               )}
@@ -194,7 +197,6 @@ const PreschoolEnglish = () => {
         )}
       </AnimatePresence>
 
-      {/* FOOTER */}
       <Footer />
     </div>
   );

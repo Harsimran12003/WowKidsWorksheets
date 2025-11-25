@@ -47,6 +47,7 @@ function App() {
         <Route path="/1st-grade/1st-grade-english" element={<FirstGradeEnglish/>} />
         <Route path="/1st-grade/1st-grade-maths" element={<FirstGradeMaths/>} />
         <Route path="/1st-grade/1st-grade-science" element={<FirstGradeScience/>} />
+        <Route path="/1st-grade/1st-grade-social-studies" element={<FirstGradeSocialStudies/>} />
         <Route path="/2nd-grade/2nd-grade-english" element={<SecondGradeEnglish/>} />
         <Route path="/2nd-grade/2nd-grade-maths" element={<SecondGradeMaths/>} />
         <Route path="/2nd-grade/2nd-grade-science" element={<SecondGradeScience/>} />
@@ -55,8 +56,8 @@ function App() {
         <Route path="/maths" element={<MathsPage />} />
         <Route path="/science" element={<SciencePage />} />
         <Route path="/art-crafts" element={<ArtCraftsPage />} />
-        <Route path="/coloring-pages" element={<ColoringPages />} />
-        <Route path="/puzzles-games" element={<PuzzlesGames />} />
+        <Route path="/coloring" element={<ColoringPages />} />
+        <Route path="/puzzles" element={<PuzzlesGames />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
 

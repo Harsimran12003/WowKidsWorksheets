@@ -1,51 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiEye, FiX } from "react-icons/fi";
 import Footer from "../components/Footer";
 
-const homeworkWorksheets = [
-  {
-    title: "Weekly Homework Sheet",
-    img: "/worksheets/preschool/homework/weekly-hw.png",
-    pdf: "/worksheets/preschool/homework/weekly-hw.pdf",
-  },
-  {
-    title: "Alphabet Practice Homework",
-    img: "/worksheets/preschool/homework/alpha-hw.png",
-    pdf: "/worksheets/preschool/homework/alpha-hw.pdf",
-  },
-  {
-    title: "Number Practice Homework",
-    img: "/worksheets/preschool/homework/number-hw.png",
-    pdf: "/worksheets/preschool/homework/number-hw.pdf",
-  },
-  {
-    title: "Color & Trace Homework",
-    img: "/worksheets/preschool/homework/colour-trace.png",
-    pdf: "/worksheets/preschool/homework/colour-trace.pdf",
-  },
-  {
-    title: "Home Activity Sheet",
-    img: "/worksheets/preschool/homework/activity-hw.png",
-    pdf: "/worksheets/preschool/homework/activity-hw.pdf",
-  },
-];
-
+const API_BASE = "http://localhost:5000";
 const BATCH = 4;
 
 const PreschoolHomework = () => {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [previewData, setPreviewData] = useState(null);
 
-  const openPreview = (ws) => setPreviewData(ws);
-  const closePreview = () => setPreviewData(null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          const filtered = data.worksheets.filter(
+            (ws) =>
+              ws.category === "preschool" &&
+              ws.subCategory.toLowerCase() === "homework"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.log("Error loading:", err));
+  }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-orange-50 to-pink-50">
       <Navbar />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section className="relative pt-24 pb-20 text-center overflow-hidden">
 
         {/* Floating Emojis */}
@@ -56,8 +47,6 @@ const PreschoolHomework = () => {
         >
           📝
         </motion.span>
-
-        
 
         <motion.span
           className="absolute left-24 bottom-12 text-5xl opacity-60 pointer-events-none"
@@ -82,13 +71,13 @@ const PreschoolHomework = () => {
         </p>
       </section>
 
-      {/* WORKSHEETS GRID */}
+      {/* GRID */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
 
-          {homeworkWorksheets.slice(0, visible).map((ws, index) => (
+          {displayed.map((ws) => (
             <motion.div
-              key={index}
+              key={ws._id}
               initial={{ opacity: 0, scale: 0.85 }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.04, y: -8 }}
@@ -100,29 +89,39 @@ const PreschoolHomework = () => {
                 📝 HW
               </div>
 
-              <div className="w-full h-44 bg-white shadow-inner border p-3 rounded-xl flex justify-center items-center">
-                <img
-                  src={ws.img}
-                  alt={ws.title}
-                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-                />
+              {/* Preview Card – PDF/IMG */}
+              <div className="w-full h-44 bg-white shadow-inner border p-3 rounded-xl flex justify-center items-center overflow-hidden relative">
+
+                {ws.file.endsWith(".pdf") ? (
+                  <iframe
+                    src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0`}
+                    className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+                  />
+                ) : (
+                  <img
+                    src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+                    alt={ws.title}
+                    className="w-full h-full object-contain hover:scale-105 transition-transform"
+                  />
+                )}
+
               </div>
 
               <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
-                {ws.title}
+                {ws.name}
               </h3>
 
-              {/* Action Buttons */}
+              {/* Buttons */}
               <div className="mt-auto w-full flex gap-3 pt-4">
                 <button
-                  onClick={() => openPreview(ws)}
+                  onClick={() => setPreviewData(ws)}
                   className="flex-1 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-full shadow-md"
                 >
                   <FiEye /> View
                 </button>
 
                 <a
-                  href={ws.pdf}
+                  href={`${API_BASE}/uploads/worksheets/${ws.file}`}
                   download
                   className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full shadow-md"
                 >
@@ -133,8 +132,8 @@ const PreschoolHomework = () => {
           ))}
         </div>
 
-        {/* LOAD MORE BUTTON */}
-        {visible < homeworkWorksheets.length && (
+        {/* LOAD MORE */}
+        {visible < worksheets.length && (
           <div className="flex justify-center mt-12">
             <button
               onClick={() => setVisible((prev) => prev + BATCH)}
@@ -146,7 +145,7 @@ const PreschoolHomework = () => {
         )}
       </section>
 
-      {/* MODAL PREVIEW */}
+      {/* PREVIEW MODAL */}
       <AnimatePresence>
         {previewData && (
           <motion.div
@@ -169,20 +168,20 @@ const PreschoolHomework = () => {
               </button>
 
               <h3 className="text-xl md:text-2xl font-bold text-center text-orange-600 mb-4">
-                {previewData.title}
+                {previewData.name}
               </h3>
 
               <div className="w-full h-[70vh]">
-                {previewData.pdf.endsWith(".pdf") ? (
+                {previewData.file.endsWith(".pdf") ? (
                   <embed
-                    src={previewData.pdf}
+                    src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
                     type="application/pdf"
                     className="w-full h-full rounded-xl"
                   />
                 ) : (
                   <img
-                    src={previewData.img}
-                    alt={previewData.title}
+                    src={`${API_BASE}/uploads/worksheets/${previewData.file}`}
+                    alt={previewData.name}
                     className="w-full h-full object-contain rounded-xl"
                   />
                 )}

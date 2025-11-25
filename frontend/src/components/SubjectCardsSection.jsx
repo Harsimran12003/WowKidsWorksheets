@@ -36,14 +36,14 @@ const subjects = [
   },
   {
     name: "Coloring Pages",
-    route: "/coloring-pages",
+    route: "/coloring",
     color: "from-purple-400 to-fuchsia-500",
     emoji: "🎨",
     img: "./coloring.png",
   },
   {
     name: "Puzzles & Games",
-    route: "/puzzles-games",
+    route: "/puzzles",
     color: "from-cyan-400 to-sky-500",
     emoji: "🧩",
     img: "./puzzles.png",

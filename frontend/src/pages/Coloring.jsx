@@ -4,13 +4,7 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiEye, FiDownload, FiX } from "react-icons/fi";
 
-
-const worksheets = [
-  { title: "Animals Coloring", img: "/worksheets/coloring/animals.png", pdf: "/worksheets/coloring/animals.pdf" },
-  { title: "Vehicles Coloring", img: "/worksheets/coloring/vehicles.png", pdf: "/worksheets/coloring/vehicles.pdf" },
-  { title: "Fruits & Vegetables", img: "/worksheets/coloring/fruits.png", pdf: "/worksheets/coloring/fruits.pdf" },
-  { title: "Alphabet Coloring", img: "/worksheets/coloring/alpha.png", pdf: "/worksheets/coloring/alpha.pdf" },
-];
+const API_BASE = "http://localhost:5000"; // Backend
 
 const BATCH = 4;
 
@@ -22,12 +16,25 @@ const Card = ({ ws, onView }) => (
                transition-all flex flex-col"
     whileHover={{ scale: 1.06, y: -6 }}
   >
-    <div className="w-full h-44 bg-white/80 rounded-2xl p-3 shadow-inner flex items-center justify-center overflow-hidden">
-      <img src={ws.img} alt={ws.title} className="w-full h-full object-contain" />
+    <div className="relative w-full h-44 bg-white/80 rounded-2xl p-3 shadow-inner overflow-hidden">
+
+      {/* Show PDF preview inside the card (scrollbars hidden) */}
+      {ws.file.toLowerCase().endsWith(".pdf") ? (
+        <iframe
+          src={`${API_BASE}/uploads/worksheets/${ws.file}#toolbar=0&navpanes=0&scrollbar=0`}
+          className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+        />
+      ) : (
+        <img
+          src={`${API_BASE}/uploads/worksheets/${ws.file}`}
+          alt={ws.name}
+          className="w-full h-full object-contain"
+        />
+      )}
     </div>
 
     <h3 className="mt-4 text-lg font-bold text-gray-800 text-center min-h-[60px]">
-      {ws.title}
+      {ws.name}
     </h3>
 
     {/* BUTTONS */}
@@ -41,7 +48,7 @@ const Card = ({ ws, onView }) => (
       </button>
 
       <a
-        href={ws.pdf}
+        href={`${API_BASE}/uploads/worksheets/${ws.file}`}
         download
         className="flex-1 py-2 px-3 rounded-full bg-green-500 text-white font-semibold 
                    hover:bg-green-600 shadow-md flex items-center justify-center gap-2"
@@ -53,30 +60,45 @@ const Card = ({ ws, onView }) => (
 );
 
 export default function Coloring() {
+  const [worksheets, setWorksheets] = useState([]);
   const [visible, setVisible] = useState(BATCH);
   const [preview, setPreview] = useState(null);
 
+  // Fetch from backend
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    fetch(`${API_BASE}/api/worksheets`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          const filtered = data.worksheets.filter(
+            (ws) => ws.subCategory === "Coloring"
+          );
+          setWorksheets(filtered);
+        }
+      })
+      .catch((err) => console.error("Fetch Error:", err));
   }, []);
+
+  const displayed = worksheets.slice(0, visible);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-yellow-50 to-orange-50">
       <Navbar />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
-        
-        {/* Floating icons */}
         <motion.span
-          className="absolute left-10 top-28 text-6xl opacity-50 pointer-events-none"
+          className="absolute left-10 top-28 text-6xl opacity-40 pointer-events-none"
           animate={{ y: [0, -12, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
           🎨
         </motion.span>
+
         <motion.span
-          className="absolute right-12 top-36 text-6xl opacity-50 pointer-events-none"
+          className="absolute right-12 top-36 text-6xl opacity-40 pointer-events-none"
           animate={{ y: [0, -15, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
@@ -93,23 +115,31 @@ export default function Coloring() {
         </motion.h1>
 
         <p className="mt-4 text-gray-700 max-w-2xl mx-auto text-lg">
-          Fun, large printable coloring worksheets for kids to learn + enjoy!
+          Fun, printable coloring worksheets for kids to color and enjoy!
         </p>
       </header>
 
-      {/* GRID SECTION */}
+      {/* GRID */}
       <main className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {worksheets.slice(0, visible).map((ws, i) => (
-            <Card ws={ws} key={i} onView={setPreview} />
-          ))}
-        </div>
+        {displayed.length === 0 ? (
+          <p className="text-center text-gray-600 text-lg mt-10">
+            No Coloring worksheets found.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            {displayed.map((ws) => (
+              <Card ws={ws} key={ws._id} onView={setPreview} />
+            ))}
+          </div>
+        )}
 
         {/* LOAD MORE */}
         {visible < worksheets.length && (
           <div className="flex justify-center mt-12">
             <button
-              onClick={() => setVisible((v) => Math.min(worksheets.length, v + BATCH))}
+              onClick={() =>
+                setVisible((v) => Math.min(worksheets.length, v + BATCH))
+              }
               className="px-10 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-full font-bold shadow-lg"
             >
               Load More ...
@@ -141,14 +171,21 @@ export default function Coloring() {
               </button>
 
               <h2 className="text-2xl font-bold text-center text-pink-600 mb-4">
-                {preview.title}
+                {preview.name}
               </h2>
 
               <div className="h-[70vh]">
-                {preview.pdf.endsWith(".pdf") ? (
-                  <embed src={preview.pdf} type="application/pdf" className="w-full h-full rounded-xl" />
+                {preview.file.endsWith(".pdf") ? (
+                  <embed
+                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    type="application/pdf"
+                    className="w-full h-full rounded-xl"
+                  />
                 ) : (
-                  <img src={preview.img} className="w-full h-full object-contain rounded-xl" />
+                  <img
+                    src={`${API_BASE}/uploads/worksheets/${preview.file}`}
+                    className="w-full h-full object-contain rounded-xl"
+                  />
                 )}
               </div>
             </motion.div>
