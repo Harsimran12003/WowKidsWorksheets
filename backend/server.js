@@ -36,9 +36,12 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "wowkids_worksheets",
-    resource_type: "auto", // supports images + pdf
+    resource_type: "auto",
+    type: "upload",        // <-- forces PUBLIC mode
+    access_mode: "public", // <-- ensures downloadable URL
   },
 });
+
 
 const upload = multer({ storage });
 
