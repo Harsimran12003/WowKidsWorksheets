@@ -67,8 +67,18 @@ const Footer = () => {
         <p className="mt-10 text-gray-800 font-semibold">
           © 2025 WowKids Worksheets. All Rights Reserved 🌟
         </p>
+
+        {/* Terms & Conditions Link */}
+        <p className="mt-4">
+          <a
+            href="/terms-and-conditions"
+            className="text-blue-700 underline font-semibold hover:text-blue-900"
+          >
+            Terms & Conditions
+          </a>
+        </p>
         <p className="mt-7 text-gray-500 text-[14px] mb-45">
-          Powered by Excellence Web Solutions <br />
+          Powered by Excellence Web Services <br />
         </p>
       </div>
 

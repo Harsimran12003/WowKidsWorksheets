@@ -28,7 +28,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddWorksheet from "./pages/admin/AddWorksheet";
 import ViewWorksheets from "./pages/admin/ViewWorksheets";
-// import EditWorksheet from "./pages/admin/EditWorksheet";
+import TermsAndConditions from './pages/TermsAndConditions.jsx'
 
 function App() {
   return (
@@ -60,6 +60,8 @@ function App() {
         <Route path="/puzzles" element={<PuzzlesGames />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+
 
         {/* ---------- ADMIN ROUTES ---------- */}
         <Route path="/admin" element={<AdminDashboard />} />
@@ -67,7 +69,6 @@ function App() {
         {/* Admin sub-pages */}
         <Route path="/admin/add-worksheet" element={<AddWorksheet />} />
         <Route path="/admin/view-worksheets" element={<ViewWorksheets />} />
-        {/* <Route path="/admin/edit/:id" element={<EditWorksheet />} /> */}
 
       </Routes>
     </Router>

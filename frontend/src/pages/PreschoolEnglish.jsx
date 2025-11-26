@@ -105,18 +105,25 @@ const PreschoolEnglish = () => {
               </div>
 
               {/* Worksheet Thumbnail */}
+              {/* Preview Card – PDF/IMG */}
               <div className="w-full h-44 bg-white shadow-inner border p-3 rounded-xl flex justify-center items-center overflow-hidden relative">
-                {isPDF(ws.file) ? (
-  <div className="text-center text-gray-600">
-    <p className="font-bold">PDF File</p>
-    <p className="text-xs">(Click View to open)</p>
-  </div>
-) : (
-  <img src={ws.file} className="w-full h-full object-contain" />
-)}
 
+                {ws.file.endsWith(".pdf") ? (
+                  <iframe
+                    src={`${ws.file}#toolbar=0`}
+                    className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+                  />
+                ) : (
+                  <img
+                    src={ws.file}
+                    alt={ws.title}
+                    className="w-full h-full object-contain hover:scale-105 transition-transform"
+                  />
+                )}
 
               </div>
+
+              
 
               {/* Title */}
               <h3 className="text-lg md:text-xl font-bold text-gray-800 text-center mt-4 min-h-[60px]">
