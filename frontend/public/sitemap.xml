@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://wowkidsworksheets.in/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Preschool -->
+  <url><loc>https://wowkidsworksheets.in/preschool/pre-school-tracing</loc></url>
+  <url><loc>https://wowkidsworksheets.in/preschool/english</loc></url>
+  <url><loc>https://wowkidsworksheets.in/preschool/maths</loc></url>
+  <url><loc>https://wowkidsworksheets.in/preschool/science</loc></url>
+  <url><loc>https://wowkidsworksheets.in/preschool/homework</loc></url>
+  <url><loc>https://wowkidsworksheets.in/preschool/practice</loc></url>
+
+  <!-- Kindergarten -->
+  <url><loc>https://wowkidsworksheets.in/kindergarten/nursery</loc></url>
+  <url><loc>https://wowkidsworksheets.in/kindergarten/lkg</loc></url>
+  <url><loc>https://wowkidsworksheets.in/kindergarten/ukg</loc></url>
+
+  <!-- 1st Grade -->
+  <url><loc>https://wowkidsworksheets.in/1st-grade/1st-grade-english</loc></url>
+  <url><loc>https://wowkidsworksheets.in/1st-grade/1st-grade-maths</loc></url>
+  <url><loc>https://wowkidsworksheets.in/1st-grade/1st-grade-science</loc></url>
+  <url><loc>https://wowkidsworksheets.in/1st-grade/1st-grade-social-studies</loc></url>
+
+  <!-- 2nd Grade -->
+  <url><loc>https://wowkidsworksheets.in/2nd-grade/2nd-grade-english</loc></url>
+  <url><loc>https://wowkidsworksheets.in/2nd-grade/2nd-grade-maths</loc></url>
+  <url><loc>https://wowkidsworksheets.in/2nd-grade/2nd-grade-science</loc></url>
+  <url><loc>https://wowkidsworksheets.in/2nd-grade/2nd-grade-social-studies</loc></url>
+
+  <!-- Subject Pages -->
+  <url><loc>https://wowkidsworksheets.in/english</loc></url>
+  <url><loc>https://wowkidsworksheets.in/maths</loc></url>
+  <url><loc>https://wowkidsworksheets.in/science</loc></url>
+  <url><loc>https://wowkidsworksheets.in/art-crafts</loc></url>
+  <url><loc>https://wowkidsworksheets.in/coloring</loc></url>
+  <url><loc>https://wowkidsworksheets.in/puzzles</loc></url>
+
+  <!-- Legal Pages -->
+  <url><loc>https://wowkidsworksheets.in/privacy-policy</loc></url>
+  <url><loc>https://wowkidsworksheets.in/terms-and-conditions</loc></url>
+
+  <!-- Admin Pages (optional indexing) -->
+  <!-- Google recommends NOT indexing admin pages. If you want them removed, I can exclude. -->
+  <url><loc>https://wowkidsworksheets.in/admin</loc></url>
+  <url><loc>https://wowkidsworksheets.in/admin/add-worksheet</loc></url>
+  <url><loc>https://wowkidsworksheets.in/admin/view-worksheets</loc></url>
+
+</urlset>
