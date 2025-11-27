@@ -29,10 +29,15 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddWorksheet from "./pages/admin/AddWorksheet";
 import ViewWorksheets from "./pages/admin/ViewWorksheets";
 import TermsAndConditions from './pages/TermsAndConditions.jsx'
+import ReactGA from "react-ga4";
+import TrackPageView from './TrackPageView.jsx';
 
 function App() {
+  ReactGA.initialize("G-Z6YHQVY234");
   return (
+    
     <Router>
+      <TrackPageView />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/preschool/pre-school-tracing" element={<PreschoolTracing />} />
@@ -72,6 +77,7 @@ function App() {
 
       </Routes>
     </Router>
+    
   )
 }
 
