@@ -87,8 +87,27 @@ export default function Maths() {
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 via-blue-50 to-purple-50">
       <Navbar />
 
+      {/* TOP BANNER */}
+        {/* FULL-WIDTH HERO BANNER */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9 }}
+          className="w-full mt-8 relative "
+        >
+
+          {/* Banner Image */}
+          <img
+            src="/math-banner.jpg"
+            alt="Learning With Math"
+            className="w-full h-[290px] md:h-[380px] lg:h-[420px] object-contain  "
+          />
+        
+        </motion.div>
+
+
       {/* HERO */}
-      <header className="relative pt-28 pb-20 text-center overflow-hidden">
+      {/* <header className="relative pt-10 pb-20 text-center overflow-hidden">
         <motion.span
           className="absolute left-10 top-24 text-6xl opacity-40 pointer-events-none"
           animate={{ y: [0, -12, 0] }}
@@ -103,24 +122,24 @@ export default function Maths() {
           transition={{ repeat: Infinity, duration: 3 }}
         >
           ➕
-        </motion.span>
+        </motion.span> */}
 
-        <motion.h1
+        {/* <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-5xl md:text-6xl font-extrabold text-cyan-700"
           style={{ fontFamily: "'Fredoka One', cursive" }}
         >
           Maths Worksheets
-        </motion.h1>
+        </motion.h1> */}
 
-        <p className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
+        {/* <p className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
           Hands-on number practice, mental math, geometry and measurement fun!
-        </p>
-      </header>
+        </p> */}
+      {/* </header> */}
 
       {/* GRID */}
-      <main className="max-w-7xl mx-auto px-6 pb-24">
+      <main className="max-w-7xl mx-auto px-6 pb-24 pt-10">
         {displayed.length === 0 ? (
           <p className="text-center text-gray-700 text-lg mt-10">No Maths worksheets found.</p>
         ) : (
