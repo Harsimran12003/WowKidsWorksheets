@@ -4,7 +4,7 @@ import { FiSearch, FiMenu, FiX } from "react-icons/fi";
 import { FaInstagram, FaFacebookF, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const LOGO_PATH = "/wowkidsworksheetslogo[1].png";
+const LOGO_PATH = "/wowkidsworksheetslogo.png";
 
 const Navbar = () => {
   const [openSearch, setOpenSearch] = useState(false);
