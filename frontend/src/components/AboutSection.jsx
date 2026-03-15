@@ -22,6 +22,7 @@ const AboutSection = () => {
 
       <div className="max-w-6xl mx-auto px-6 text-center">
         {/* Heading */}
+        <h1>
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -30,7 +31,7 @@ const AboutSection = () => {
           style={{ fontFamily: "'Fredoka One', cursive" }}
         >
           About WowKids Worksheets
-        </motion.h2>
+        </motion.h2></h1>
 
         {/* Text */}
         <motion.p

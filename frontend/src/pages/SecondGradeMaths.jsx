@@ -35,6 +35,10 @@ export default function SecondGradeMaths() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 via-blue-50 to-teal-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
@@ -64,10 +68,10 @@ export default function SecondGradeMaths() {
           2nd Grade Maths Worksheets ✨
         </motion.h1>
 
-        <p className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
+        <h2 className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
           Master addition, subtraction, place value, geometry, measurement & more
           with fun and interactive maths worksheets!
-        </p>
+        </h2>
       </header>
 
       {/* WORKSHEET GRID */}

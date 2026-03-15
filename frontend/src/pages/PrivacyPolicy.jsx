@@ -12,6 +12,10 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-yellow-50 to-sky-50 text-gray-800">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO */}
       <header className="relative pt-24 pb-10">
@@ -26,10 +30,10 @@ const PrivacyPolicy = () => {
               Privacy Policy
             </motion.h1>
 
-            <p className="mt-4 text-base md:text-lg text-gray-700 max-w-2xl">
+            <h2 className="mt-4 text-base md:text-lg text-gray-700 max-w-2xl">
               WowKids Worksheets is committed to protecting your privacy. This policy explains how we collect,
               use and safeguard personal information when you visit and use our website.
-            </p>
+            </h2>
 
             <div className="mt-6 flex gap-3">
               

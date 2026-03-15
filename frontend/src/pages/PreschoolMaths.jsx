@@ -35,6 +35,10 @@ const PreschoolMaths = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-blue-50 to-pink-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <section className="relative pt-24 pb-20 overflow-hidden">
@@ -66,9 +70,9 @@ const PreschoolMaths = () => {
           Preschool Maths Worksheets 🔢✨
         </motion.h1>
 
-        <p className="mt-4 text-center max-w-2xl mx-auto text-gray-700 text-lg">
+        <h2 className="mt-4 text-center max-w-2xl mx-auto text-gray-700 text-lg">
           Build strong number sense, shape recognition & early counting skills.
-        </p>
+        </h2>
       </section>
 
       {/* WORKSHEET GRID */}

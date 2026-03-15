@@ -38,6 +38,10 @@ const KindergartenNursery = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 via-purple-50 to-blue-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <section className="relative overflow-hidden pt-28 pb-20">

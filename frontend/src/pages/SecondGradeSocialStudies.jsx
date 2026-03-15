@@ -38,6 +38,10 @@ export default function SecondGradeSocialStudies() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-orange-50 to-red-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
@@ -68,10 +72,10 @@ export default function SecondGradeSocialStudies() {
           2nd Grade Social Studies Worksheets 🧭📚
         </motion.h1>
 
-        <p className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
+        <h2 className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
           Explore maps, communities, festivals, national symbols, and more —
           fun worksheets to build awareness about the world around us!
-        </p>
+        </h2>
       </header>
 
       {/* WORKSHEET GRID */}

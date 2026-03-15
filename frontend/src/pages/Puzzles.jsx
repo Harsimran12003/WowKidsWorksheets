@@ -87,6 +87,10 @@ export default function Puzzles() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-sky-50 to-indigo-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
@@ -116,9 +120,9 @@ export default function Puzzles() {
           Puzzles & Games
         </motion.h1>
 
-        <p className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
+        <h2 className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
           Mazes, logic puzzles, spot-difference challenges & fun brain boosters!
-        </p>
+        </h2>
       </header>
 
       {/* GRID */}

@@ -38,6 +38,10 @@ const KindergartenLKG = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 via-blue-50 to-indigo-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <section className="relative pt-28 pb-16 overflow-hidden">
@@ -76,9 +80,9 @@ const KindergartenLKG = () => {
             LKG Worksheets 🧩
           </motion.h1>
 
-          <p className="mt-4 text-gray-700 text-lg max-w-2xl mx-auto">
+          <h2 className="mt-4 text-gray-700 text-lg max-w-2xl mx-auto">
             Fun & interactive worksheets for Kindergarten LKG learners!
-          </p>
+          </h2>
         </div>
       </section>
 

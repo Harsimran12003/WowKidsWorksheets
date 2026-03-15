@@ -36,6 +36,10 @@ const PreschoolScience = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-blue-50 to-pink-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO */}
       <section className="relative pt-24 pb-20 text-center overflow-hidden">
@@ -65,9 +69,9 @@ const PreschoolScience = () => {
           Preschool Science Worksheets 🔬🧪
         </motion.h1>
 
-        <p className="mt-4 max-w-2xl mx-auto text-gray-700 text-lg">
+        <h2 className="mt-4 max-w-2xl mx-auto text-gray-700 text-lg">
           Explore animals, plants, senses, and simple experiments — designed to spark early scientific curiosity!
-        </p>
+        </h2>
       </section>
 
       {/* GRID */}

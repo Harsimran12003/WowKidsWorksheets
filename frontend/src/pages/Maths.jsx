@@ -86,6 +86,10 @@ export default function Maths() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 via-blue-50 to-purple-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* TOP BANNER */}
         {/* FULL-WIDTH HERO BANNER */}

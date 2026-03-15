@@ -43,6 +43,10 @@ const PreschoolEnglish = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-pink-50 to-yellow-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <section className="relative pt-24 pb-20 overflow-hidden">
@@ -81,10 +85,10 @@ const PreschoolEnglish = () => {
           Preschool English Worksheets 🅰️🅱️🅾️
         </motion.h1>
 
-        <p className="mt-4 text-center max-w-2xl mx-auto text-gray-700 text-lg">
+        <h2 className="mt-4 text-center max-w-2xl mx-auto text-gray-700 text-lg">
           Build strong early literacy skills with engaging alphabet, phonics,
           and vocabulary worksheets specially designed for preschoolers.
-        </p>
+        </h2>
       </section>
 
       {/* WORKSHEETS GRID */}

@@ -12,6 +12,10 @@ const TermsAndConditions = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-pink-50 to-blue-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 

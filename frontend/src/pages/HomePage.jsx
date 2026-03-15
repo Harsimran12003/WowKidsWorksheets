@@ -30,6 +30,10 @@ export default function HomePage() {
     <div className="overflow-hidden bg-gradient-to-b from-pink-100 via-yellow-100 to-sky-100">
       {/* NAVBAR */}
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       <HeroSection />
       <AboutSection />

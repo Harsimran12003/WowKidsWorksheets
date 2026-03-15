@@ -16,22 +16,20 @@ const Card = ({ ws, onView }) => (
     className="rounded-3xl bg-gradient-to-br from-orange-200/40 to-pink-200/40 backdrop-blur-xl 
                border border-white/40 shadow-[0_8px_20px_rgba(0,0,0,0.15)] p-5 flex flex-col"
   >
-        <div className="relative w-full h-44 rounded-2xl bg-white/70 overflow-hidden shadow-inner">
-  {ws.file.endsWith(".pdf") ? (
-    <iframe
-      src={`${ws.file}#toolbar=0&navpanes=0&scrollbar=0`}
-      className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
-    />
-  ) : (
-    <img
-      src={ws.file}
-      alt={ws.name}
-      className="w-full h-full object-contain"
-    />
-  )}
-</div>
-
-
+    <div className="relative w-full h-44 rounded-2xl bg-white/70 overflow-hidden shadow-inner">
+      {ws.file.endsWith(".pdf") ? (
+        <iframe
+          src={`${ws.file}#toolbar=0&navpanes=0&scrollbar=0`}
+          className="absolute top-0 left-0 w-[200%] h-[200%] scale-[0.5] origin-top-left pointer-events-none"
+        />
+      ) : (
+        <img
+          src={ws.file}
+          alt={ws.name}
+          className="w-full h-full object-contain"
+        />
+      )}
+    </div>
 
     <h3 className="text-lg font-bold text-gray-800 text-center mt-4 min-h-[60px]">
       {ws.name}
@@ -74,7 +72,7 @@ export default function Art() {
         if (data?.success) {
           // Filter only "Art-Crafts"
           const filtered = data.worksheets.filter(
-            (ws) => ws.subCategory === "Art-Crafts"
+            (ws) => ws.subCategory === "Art-Crafts",
           );
           setAllArtWorksheets(filtered);
         }
@@ -87,6 +85,10 @@ export default function Art() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-pink-50 to-orange-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO */}
       <header className="relative pt-28 pb-20 text-center">
@@ -115,10 +117,12 @@ export default function Art() {
           Art & Crafts Worksheets ✨
         </motion.h1>
 
-        <p className="mt-4 text-gray-700 max-w-2xl mx-auto text-lg">
-          Fun, creative worksheets to cut, color, fold, design & explore imagination!
-        </p>
+        <h2 className="mt-4 text-gray-700 max-w-2xl mx-auto text-lg">
+          Fun, creative worksheets to cut, color, fold, design & explore
+          imagination!
+        </h2>
       </header>
+      
 
       {/* GRID */}
       <main className="max-w-7xl mx-auto px-6 pb-24">
@@ -138,7 +142,9 @@ export default function Art() {
         {visible < allArtWorksheets.length && (
           <div className="flex justify-center mt-12">
             <button
-              onClick={() => setVisible((v) => Math.min(allArtWorksheets.length, v + BATCH))}
+              onClick={() =>
+                setVisible((v) => Math.min(allArtWorksheets.length, v + BATCH))
+              }
               className="px-10 py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-full shadow-lg"
             >
               Load More ...

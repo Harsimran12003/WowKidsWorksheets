@@ -86,6 +86,10 @@ export default function Coloring() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-yellow-50 to-orange-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
@@ -114,9 +118,9 @@ export default function Coloring() {
           Coloring Pages ✨
         </motion.h1>
 
-        <p className="mt-4 text-gray-700 max-w-2xl mx-auto text-lg">
+        <h2 className="mt-4 text-gray-700 max-w-2xl mx-auto text-lg">
           Fun, printable coloring worksheets for kids to color and enjoy!
-        </p>
+        </h2>
       </header>
 
       {/* GRID */}

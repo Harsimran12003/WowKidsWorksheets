@@ -36,6 +36,10 @@ const FirstGradeSocialStudies = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-yellow-50 to-pink-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <header className="relative pt-28 pb-20 text-center overflow-hidden">
@@ -73,10 +77,10 @@ const FirstGradeSocialStudies = () => {
           1st Grade Social Studies Worksheets 🌍
         </motion.h1>
 
-        <p className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
+        <h2 className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
           Explore family, community helpers, transport, houses,
           neighborhoods & world basics through fun worksheets.
-        </p>
+        </h2>
       </header>
 
       {/* WORKSHEET GRID */}

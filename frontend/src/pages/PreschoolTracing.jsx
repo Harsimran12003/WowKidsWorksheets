@@ -37,6 +37,10 @@ const PreschoolTracing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-yellow-50 to-blue-50">
       <Navbar />
+      <h1 className="sr-only">
+        Free Art and Crafts Worksheets for Kids – Printable Coloring, Cutting
+        and Creative Activities
+      </h1>
 
       {/* HERO SECTION */}
       <section className="relative pt-24 pb-16 text-center overflow-hidden">
@@ -66,9 +70,9 @@ const PreschoolTracing = () => {
           Preschool Tracing Worksheets ✏️
         </motion.h1>
 
-        <p className="mt-4 max-w-2xl mx-auto text-gray-700 text-lg">
+        <h2 className="mt-4 max-w-2xl mx-auto text-gray-700 text-lg">
           Help little learners practice writing and improve fine motor skills with fun & interactive tracing worksheets!
-        </p>
+        </h2>
       </section>
 
       {/* WORKSHEETS GRID */}
