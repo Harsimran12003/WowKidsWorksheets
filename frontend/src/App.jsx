@@ -29,6 +29,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddWorksheet from "./pages/admin/AddWorksheet";
 import ViewWorksheets from "./pages/admin/ViewWorksheets";
 import TermsAndConditions from './pages/TermsAndConditions.jsx'
+import AboutUs from './pages/AboutUs.jsx'
 import ReactGA from "react-ga4";
 import TrackPageView from './TrackPageView.jsx';
 
@@ -66,6 +67,7 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/about-us" element={<AboutUs />} />
 
 
         {/* ---------- ADMIN ROUTES ---------- */}

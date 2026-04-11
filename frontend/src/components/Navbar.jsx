@@ -330,6 +330,16 @@ const Navbar = () => {
               </motion.button>
             </Link>
 
+            {/* ABOUT US (desktop) */}
+            <Link to="/about-us">
+              <motion.button
+                className="hidden md:block px-4 py-1.5 font-bold text-white rounded-full bg-gradient-to-r from-purple-400 to-pink-500 shadow-md border border-pink-600 hover:scale-105 cursor-pointer"
+                whileTap={{ scale: 0.98 }}
+              >
+                About Us
+              </motion.button>
+            </Link>
+
             {/* MOBILE MENU TOGGLE */}
             <button
               className="lg:hidden text-3xl ml-1"
@@ -391,6 +401,13 @@ const Navbar = () => {
               <Link to="/privacy-policy" onClick={() => setMenuOpen(false)}>
                 <div className="mt-4 text-blue-600 font-semibold text-sm">
                   Privacy Policy
+                </div>
+              </Link>
+
+              {/* Mobile About Us */}
+              <Link to="/about-us" onClick={() => setMenuOpen(false)}>
+                <div className="mt-2 text-blue-600 font-semibold text-sm">
+                  About Us
                 </div>
               </Link>
             </motion.div>
